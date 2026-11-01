@@ -183,7 +183,7 @@ export default function Home() {
   return (
     <div>
       <div className="p-2">
-        <h1 className="mb-8">Animations</h1>
+        <h1 className="mb-8">Animations avec CSS</h1>
         <Button className="mr-2" onClick={toutAnimer}>Tout Animer</Button>
         <div className="flex items-center">
           <span className="w-28 text-right pr-2">Translation</span>
@@ -233,28 +233,6 @@ export default function Home() {
           <CarreAvecFleche id="forward" />
         </div>
       </div>
-
-      <div className="p-2">
-        <Button className="mr-2" onClick={animerAvecEase}>Comprendre le ease</Button>
-        <div className="flex items-center">
-          <span className="w-28 text-right pr-2">Sans Ease (linéaire)</span>
-          <CarreAvecFleche id="ease0" />
-        </div>
-        <div className="flex items-center">
-          <span className="w-28 text-right pr-2">Ease In</span>
-          <CarreAvecFleche id="ease1" />
-        </div>
-        <div className="flex items-center">
-          <span className="w-28 text-right pr-2">Ease Out</span>
-          <CarreAvecFleche id="ease2" />
-        </div>
-        <div className="flex items-center">
-          <span className="w-28 text-right pr-2">Ease In-Out</span>
-          <CarreAvecFleche id="ease3" />
-        </div>
-      </div>
-
-      
       
     </div>
   );

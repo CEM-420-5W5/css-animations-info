@@ -6,7 +6,7 @@ export function CarreAvecFleche({ id }: CarreAvecFlecheProps) {
   return (
     <div
       id={id}
-      className="h-18 w-18 bg-blue-500 m-5 flex items-center justify-center"
+      className="h-18 w-18 bg-red-500 m-5 flex items-center justify-center"
     >
       <svg
         viewBox="0 0 24 24"
