@@ -1,1 +1,1 @@
-# css-animations-info
+# animations-info
