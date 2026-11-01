@@ -7,6 +7,14 @@ export default function Home() {
 
   const ANIMATION_DURATION_MS = 1000;
 
+  const toutAnimerSimple = async () => {
+    animerTranslateSimple();
+    animerRotationSimple();
+    animerScaleSimple();
+    animerColorSimple();
+    animerOpacitySimple();
+  };
+
   const toutAnimer = async () => {
     await animerTranslate();
     await animerRotation();
@@ -15,175 +23,94 @@ export default function Home() {
     await animerOpacity();
   };
 
-  const animer = async (elementId:string, keyframes: Keyframe[], duration:number = ANIMATION_DURATION_MS, garderLesValeursFinales:boolean = false) => {
+  
+  const jouerAnimationSimple = (elementId: string, classe: string, garderLaPositionFinale: boolean = false) => {
     const element = document.getElementById(elementId);
+    element?.classList.add(classe);
+  };
 
-    let animation = element?.animate(keyframes, { duration: duration, fill: garderLesValeursFinales ? 'forwards' : 'none' });
-    await animation?.finished;
+  // Déclenche une animation CSS (classe définie dans globals.css) et attend sa fin.
+  // Retirer puis remettre la classe (avec un reflow) permet de relancer l'animation.
+  const jouerAnimation = (elementId: string, classe: string, garderLaPositionFinale: boolean = false) => {
+    return new Promise<void>((resolve) => {
+      const element = document.getElementById(elementId);
+      if (!element) {
+        resolve();
+        return;
+      }
+
+      element.classList.remove(classe);
+      // Hackish: Forcer le reflow pour que l'animation puisse être relancée
+      void element.offsetWidth;
+      element.classList.add(classe);
+
+      element.addEventListener('animationend', () => {
+        if (!garderLaPositionFinale) {
+          element.classList.remove(classe);
+        }
+        resolve();
+      }, { once: true });
+    });
   };
 
   const animerRotation = async () => {
-    const rotationKeyframes: Keyframe[] = [
-      { transform: 'rotate(180deg)' }
-    ];
-
-    await animer(`rotate`, rotationKeyframes);
+    await jouerAnimation(`rotate`, `anim-rotate`);
   };
 
   const animerTranslate = async () => {
-    const translationKeyframes: Keyframe[] = [
-      { transform: 'translateX(0%)' },
-      { transform: 'translateX(100%)' },
-      { transform: 'translateX(0%)' }
-    ];
-
-    await animer(`translate`, translationKeyframes);
+    await jouerAnimation(`translate`, `anim-translate`);
   };
 
   const animerScale = async () => {
-    const scaleKeyframes: Keyframe[] = [
-      { transform: 'scale(1)' },
-      { transform: 'scale(1.5)' },
-      { transform: 'scale(1)' }
-    ];
-
-    await animer(`scale`, scaleKeyframes);
+    await jouerAnimation(`scale`, `anim-scale`);
   };
 
   const animerColor = async () => {
-    const colorKeyframes: Keyframe[] = [
-      { backgroundColor: 'blue' },
-      { backgroundColor: 'yellow' },
-      { backgroundColor: 'blue' }
-    ];
-
-    await animer(`color`, colorKeyframes);
+    await jouerAnimation(`color`, `anim-color`);
   };
 
   const animerOpacity = async () => {
-    const opacityKeyframes: Keyframe[] = [
-      { opacity: 1 },
-      { opacity: 0 },
-      { opacity: 1 }
-    ];
-
-    await animer(`opacity`, opacityKeyframes);
+    await jouerAnimation(`opacity`, `anim-opacity`);
   };
 
-  const animerAvecOffsets = async () => {
-    await animerOffset1();
-    await animerOffset2();
-    await animerOffset3();
-    await animerOffset4();
+  const animerRotationSimple = async () => {
+    await jouerAnimationSimple(`rotate`, `anim-rotate`);
   };
 
-  const animerOffset1 = async () => {
-    const translationKeyframes: Keyframe[] = [
-      { transform: 'translateX(0%)'},
-      { transform: 'translateX(100%)', offset: 0.5 },
-      { transform: 'translateX(0%)'}
-    ];
-
-    await animer(`offset1`, translationKeyframes);
+  const animerTranslateSimple = async () => {
+    await jouerAnimationSimple(`translate`, `anim-translate`);
   };
 
-  const animerOffset2 = async () => {
-    const translationKeyframes: Keyframe[] = [
-      { transform: 'translateX(0%)', offset: 0 },
-      { transform: 'translateX(100%)', offset: 0.75 },
-      { transform: 'translateX(0%)', offset: 1 }
-    ];
-
-    await animer(`offset2`, translationKeyframes);
+  const animerScaleSimple = async () => {
+    await jouerAnimationSimple(`scale`, `anim-scale`);
   };
 
-  const animerOffset3 = async () => {
-    const translationKeyframes: Keyframe[] = [
-      { transform: 'translateX(0%)', offset: 0 },
-      { transform: 'translateX(100%)', offset: 0.9 },
-      { transform: 'translateX(0%)', offset: 1 }
-    ];
-
-    await animer(`offset3`, translationKeyframes);
+  const animerColorSimple = async () => {
+    await jouerAnimationSimple(`color`, `anim-color`);
   };
 
-  const animerOffset4 = async () => {
-    const translationKeyframes: Keyframe[] = [
-      { transform: 'translateX(0%)', offset: 0 },
-      { transform: 'translateX(50%)', offset: 0.4 },
-      { transform: 'translateX(100%)', offset: 0.5 },
-      { transform: 'translateX(50%)', offset: 0.6 },
-      { transform: 'translateX(0%)', offset: 1 }
-    ];
-
-    await animer(`offset4`, translationKeyframes);
+  const animerOpacitySimple = async () => {
+    await jouerAnimationSimple(`opacity`, `anim-opacity`);
   };
 
-  const animerAvecEase = async () => {
-    animerSansEase();
-    animerEase1();
-    animerEase2();
-    animerEase3();
+  const animerRotationBug2 = async () => {
+    await jouerAnimationSimple(`bug2`, `anim-rotate`);
   };
 
-  const animerSansEase = async () => {
-    // L'easing d'un keyframe s'applique au segment qui part de ce keyframe
-    const translationKeyframes: Keyframe[] = [
-      { transform: 'translateX(0%)', easing: 'linear' },
-      { transform: 'translateX(200%)' }
-    ];
-
-    await animer(`ease0`, translationKeyframes, 4000, true);
+  const animerTranslationBug2 = async () => {
+    await jouerAnimationSimple(`bug2`, `anim-translate`);
   };
 
-  const animerEase1 = async () => {
-    // L'easing d'un keyframe s'applique au segment qui part de ce keyframe
-    const translationKeyframes: Keyframe[] = [
-      { transform: 'translateX(0%)', easing: 'ease-in' },
-      { transform: 'translateX(200%)' }
-    ];
-
-    await animer(`ease1`, translationKeyframes, 4000, true);
-  };
-
-  const animerEase2 = async () => {
-    const translationKeyframes: Keyframe[] = [
-      { transform: 'translateX(0%)', easing: 'ease-out' },
-      { transform: 'translateX(200%)' }
-    ];
-
-    await animer(`ease2`, translationKeyframes, 4000, true);
-  };
-
-  const animerEase3 = async () => {
-    const translationKeyframes: Keyframe[] = [
-      { transform: 'translateX(0%)', easing: 'ease-in-out' },
-      { transform: 'translateX(200%)' }
-    ];
-
-    await animer(`ease3`, translationKeyframes, 4000, true);
-  };
-
-  // fill: 'forwards' garde l'état final de l'animation après sa fin
+  // La classe anim-forward utilise "forwards" pour garder l'état final
   const animerAvecFill = async () => {
-    const element = document.getElementById(`forward`);
-
-    const keyframes: Keyframe[] = [
-      { transform: 'translateX(0%) rotate(0deg)' },
-      { transform: 'translateX(100%) rotate(180deg)' }
-    ];
-
-    const animation = element?.animate(keyframes, {
-      duration: ANIMATION_DURATION_MS,
-      fill: 'forwards'
-    });
-    await animation?.finished;
+    await jouerAnimation(`forward`, `anim-forward`, true);
   };
 
   return (
     <div>
       <div className="p-2">
         <h1 className="mb-8">Animations avec CSS</h1>
+        <Button className="mr-2" onClick={toutAnimerSimple}>Tout Animer (Simple)</Button>
         <Button className="mr-2" onClick={toutAnimer}>Tout Animer</Button>
         <div className="flex items-center">
           <span className="w-28 text-right pr-2">Translation</span>
@@ -207,32 +134,24 @@ export default function Home() {
         </div>
       </div>
       <div className="p-2">
-        <Button className="mr-2" onClick={animerAvecOffsets}>Comprendre les offsets</Button>
-        <div className="flex items-center">
-          <span className="w-28 text-right pr-2">0.5 (par défaut)</span>
-          <CarreAvecFleche id="offset1" />
-        </div>
-        <div className="flex items-center">
-          <span className="w-28 text-right pr-2">0.75</span>
-          <CarreAvecFleche id="offset2" />
-        </div>
-        <div className="flex items-center">
-          <span className="w-28 text-right pr-2">0.9</span>
-          <CarreAvecFleche id="offset3" />
-        </div>
-        <div className="flex items-center">
-          <span className="w-28 text-right pr-2">Accélération au centre</span>
-          <CarreAvecFleche id="offset4" />
-        </div>
-      </div>
-
-      <div className="p-2">
         <Button className="mr-2" onClick={animerAvecFill}>Garder la position (forwards)</Button>
         <div className="flex items-center">
           <span className="w-28 text-right pr-2">Translation + rotation</span>
           <CarreAvecFleche id="forward" />
         </div>
       </div>
+
+      <div className="p-2">
+        <Button className="mr-2" onClick={animerRotationBug2}>Rotation "bug" #2</Button>
+        <Button className="mr-2" onClick={animerTranslationBug2}>Translation "bug" #2</Button>
+        <div className="flex items-center">
+          <span className="w-28 text-right pr-2">Double animations...</span>
+          <CarreAvecFleche id="bug2" />
+        </div>
+        
+      </div>
+
+      
       
     </div>
   );

@@ -128,3 +128,78 @@
     @apply font-sans;
   }
 }
+
+/* ===== Animations CSS ===== */
+
+/* Keyframes */
+@keyframes translate-anim {
+  0% { transform: translateX(0%); }
+  50% { transform: translateX(100%); }
+  100% { transform: translateX(0%); }
+}
+
+@keyframes rotate-anim {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(180deg); }
+}
+
+@keyframes scale-anim {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.5); }
+  100% { transform: scale(1); }
+}
+
+@keyframes color-anim {
+  0% { background-color: blue; }
+  50% { background-color: yellow; }
+  100% { background-color: blue; }
+}
+
+@keyframes opacity-anim {
+  0% { opacity: 1; }
+  50% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@keyframes offset1-anim {
+  0% { transform: translateX(0%); }
+  50% { transform: translateX(100%); }
+  100% { transform: translateX(0%); }
+}
+
+@keyframes offset2-anim {
+  0% { transform: translateX(0%); }
+  75% { transform: translateX(100%); }
+  100% { transform: translateX(0%); }
+}
+
+@keyframes offset3-anim {
+  0% { transform: translateX(0%); }
+  90% { transform: translateX(100%); }
+  100% { transform: translateX(0%); }
+}
+
+@keyframes offset4-anim {
+  0% { transform: translateX(0%); }
+  40% { transform: translateX(50%); }
+  50% { transform: translateX(100%); }
+  60% { transform: translateX(50%); }
+  100% { transform: translateX(0%); }
+}
+
+@keyframes forward-anim {
+  0% { transform: translateX(0%) rotate(0deg); }
+  100% { transform: translateX(100%) rotate(180deg); }
+}
+
+/* Classes d'animation (durée 1s, easing linéaire par défaut, comme animate()) */
+.anim-translate { animation: translate-anim 1000ms linear; }
+.anim-rotate { animation: rotate-anim 1000ms linear; }
+.anim-scale { animation: scale-anim 1000ms linear; }
+.anim-color { animation: color-anim 1000ms linear; }
+.anim-opacity { animation: opacity-anim 1000ms linear; }
+.anim-offset1 { animation: offset1-anim 1000ms linear; }
+.anim-offset2 { animation: offset2-anim 1000ms linear; }
+.anim-offset3 { animation: offset3-anim 1000ms linear; }
+.anim-offset4 { animation: offset4-anim 1000ms linear; }
+.anim-forward { animation: forward-anim 1000ms linear forwards; }
