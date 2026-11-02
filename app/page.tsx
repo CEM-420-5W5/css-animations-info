@@ -29,6 +29,15 @@ export default function Home() {
     element?.classList.add(classe);
   };
 
+  const jouerAnimationAvecFix = (elementId: string, classe: string) => {
+    const element = document.getElementById(elementId);
+    element.classList.remove(classe);
+    // Forcer le reflow pour que l'animation puisse être relancée
+    // Ou en language plus simple, un hack JS qui fonctionne particulièrement bien si vous n'oubliez pas de faire brûler des poils de chats dans la flamme d'une chandelle à chaque plein lune (chandelle et poils de chat non inclus)
+    void element.offsetWidth;
+    element?.classList.add(classe);
+  };
+
   const jouerAnimationAvecCallback = (elementId: string, classe: string, callback: () => void) => {
     const element = document.getElementById(elementId);
     if (!element) {
@@ -41,43 +50,6 @@ export default function Home() {
       element.classList.remove(classe);
       callback();
     }, { once: true });
-  };
-
-  const jouerAnimation = (elementId: string, classe: string) => {
-    return new Promise<void>((resolve) => {
-      const element = document.getElementById(elementId);
-      if (!element) {
-        resolve();
-        return;
-      }
-
-      element.classList.add(classe);
-
-      element.addEventListener('animationend', () => {
-        element.classList.remove(classe);
-        resolve();
-      }, { once: true });
-    });
-  };
-
-  const animerRotation = async () => {
-    await jouerAnimation(`rotate`, `anim-rotate`);
-  };
-
-  const animerTranslate = async () => {
-    await jouerAnimation(`translate`, `anim-translate`);
-  };
-
-  const animerScale = async () => {
-    await jouerAnimation(`scale`, `anim-scale`);
-  };
-
-  const animerColor = async () => {
-    await jouerAnimation(`color`, `anim-color`);
-  };
-
-  const animerOpacity = async () => {
-    await jouerAnimation(`opacity`, `anim-opacity`);
   };
 
   const animerRotationSimple = async () => {
@@ -100,6 +72,27 @@ export default function Home() {
     await jouerAnimationSimple(`opacity`, `anim-opacity`);
   };
 
+  const animerRotation = async () => {
+    await jouerAnimationAvecFix(`rotate`, `anim-rotate`);
+  };
+
+  const animerTranslate = async () => {
+    await jouerAnimationAvecFix(`translate`, `anim-translate`);
+  };
+
+  const animerScale = async () => {
+    await jouerAnimationAvecFix(`scale`, `anim-scale`);
+  };
+
+  const animerColor = async () => {
+    await jouerAnimationAvecFix(`color`, `anim-color`);
+  };
+
+  const animerOpacity = async () => {
+    await jouerAnimationAvecFix(`opacity`, `anim-opacity`);
+  };
+
+
   const animerAvecCallback = async () => {
     jouerAnimationAvecCallback(`callback`, `anim-translate`, () => {
       // La 2e animation est déclenchée dans le callback de la 1re animation
@@ -107,14 +100,9 @@ export default function Home() {
     });
   }
 
-  const animerAvecAwait = async () => {
-    await jouerAnimation(`await`, `anim-translate`);
-    await jouerAnimation(`await`, `anim-rotate`);
-  };
-
   // La classe anim-forward utilise "forwards" pour garder l'état final
   const animerAvecFill = async () => {
-    await jouerAnimation(`forward`, `anim-forward`);
+    await jouerAnimationAvecFix(`forward`, `anim-forward`);
   };
 
   return (
@@ -153,25 +141,14 @@ export default function Home() {
       </div>
 
       <div className="p-2">
+
         <Button className="mr-2" onClick={animerAvecCallback}>Animer une séquence avec un callback</Button>
         <div className="flex items-center">
           <span className="w-28 text-right pr-2">Avec callback</span>
           <CarreAvecFleche id="callback" />
         </div>
-        
+        <p style={{ color: 'red' }}>Il y a un bug si on clique sur le bouton pendant l'animation de rotation!</p>
       </div>
-
-      <div className="p-2">
-        <Button className="mr-2" onClick={animerAvecAwait}>Animer une séquence avec await</Button>
-        <div className="flex items-center">
-          <span className="w-28 text-right pr-2">Avec await</span>
-          <CarreAvecFleche id="await" />
-        </div>
-        
-      </div>
-
-      
-      
     </div>
   );
 }
