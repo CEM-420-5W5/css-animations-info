@@ -24,14 +24,26 @@ export default function Home() {
   };
 
   
-  const jouerAnimationSimple = (elementId: string, classe: string, garderLaPositionFinale: boolean = false) => {
+  const jouerAnimationSimple = (elementId: string, classe: string) => {
     const element = document.getElementById(elementId);
     element?.classList.add(classe);
   };
 
-  // Déclenche une animation CSS (classe définie dans globals.css) et attend sa fin.
-  // Retirer puis remettre la classe (avec un reflow) permet de relancer l'animation.
-  const jouerAnimation = (elementId: string, classe: string, garderLaPositionFinale: boolean = false) => {
+  const jouerAnimationAvecCallback = (elementId: string, classe: string, callback: () => void) => {
+    const element = document.getElementById(elementId);
+    if (!element) {
+      return;
+    }
+
+    element.classList.add(classe);
+
+    element.addEventListener('animationend', () => {
+      element.classList.remove(classe);
+      callback();
+    }, { once: true });
+  };
+
+  const jouerAnimation = (elementId: string, classe: string) => {
     return new Promise<void>((resolve) => {
       const element = document.getElementById(elementId);
       if (!element) {
@@ -39,15 +51,10 @@ export default function Home() {
         return;
       }
 
-      element.classList.remove(classe);
-      // Hackish: Forcer le reflow pour que l'animation puisse être relancée
-      void element.offsetWidth;
       element.classList.add(classe);
 
       element.addEventListener('animationend', () => {
-        if (!garderLaPositionFinale) {
-          element.classList.remove(classe);
-        }
+        element.classList.remove(classe);
         resolve();
       }, { once: true });
     });
@@ -93,17 +100,21 @@ export default function Home() {
     await jouerAnimationSimple(`opacity`, `anim-opacity`);
   };
 
-  const animerRotationBug2 = async () => {
-    await jouerAnimationSimple(`bug2`, `anim-rotate`);
-  };
+  const animerAvecCallback = async () => {
+    jouerAnimationAvecCallback(`callback`, `anim-translate`, () => {
+      // La 2e animation est déclenchée dans le callback de la 1re animation
+      jouerAnimationAvecCallback(`callback`, `anim-rotate`, () => {/* Rien à faire ici, juste pour montrer la séquence */});
+    });
+  }
 
-  const animerTranslationBug2 = async () => {
-    await jouerAnimationSimple(`bug2`, `anim-translate`);
+  const animerAvecAwait = async () => {
+    await jouerAnimation(`await`, `anim-translate`);
+    await jouerAnimation(`await`, `anim-rotate`);
   };
 
   // La classe anim-forward utilise "forwards" pour garder l'état final
   const animerAvecFill = async () => {
-    await jouerAnimation(`forward`, `anim-forward`, true);
+    await jouerAnimation(`forward`, `anim-forward`);
   };
 
   return (
@@ -142,11 +153,19 @@ export default function Home() {
       </div>
 
       <div className="p-2">
-        <Button className="mr-2" onClick={animerRotationBug2}>Rotation "bug" #2</Button>
-        <Button className="mr-2" onClick={animerTranslationBug2}>Translation "bug" #2</Button>
+        <Button className="mr-2" onClick={animerAvecCallback}>Animer une séquence avec un callback</Button>
         <div className="flex items-center">
-          <span className="w-28 text-right pr-2">Double animations...</span>
-          <CarreAvecFleche id="bug2" />
+          <span className="w-28 text-right pr-2">Avec callback</span>
+          <CarreAvecFleche id="callback" />
+        </div>
+        
+      </div>
+
+      <div className="p-2">
+        <Button className="mr-2" onClick={animerAvecAwait}>Animer une séquence avec await</Button>
+        <div className="flex items-center">
+          <span className="w-28 text-right pr-2">Avec await</span>
+          <CarreAvecFleche id="await" />
         </div>
         
       </div>
