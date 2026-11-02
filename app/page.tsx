@@ -31,6 +31,9 @@ export default function Home() {
 
   const jouerAnimationAvecFix = (elementId: string, classe: string) => {
     const element = document.getElementById(elementId);
+    if (!element)
+      return;
+    
     element.classList.remove(classe);
     // Forcer le reflow pour que l'animation puisse être relancée
     // Ou en language plus simple, un hack JS qui fonctionne particulièrement bien si vous n'oubliez pas de faire brûler des poils de chats dans la flamme d'une chandelle à chaque plein lune (chandelle et poils de chat non inclus)
@@ -47,6 +50,10 @@ export default function Home() {
     element.classList.add(classe);
 
     element.addEventListener('animationend', () => {
+      // Il faudrait le event listener sinon on va en ajouter un à chaque fois qu'on clique sur le bouton!
+      // Mais comme on l'a vu en classe, c'est plus simple d'utiliser javascript pour gérer les séquences d'animations
+      
+      // Au moins on peut enlever la classe pour que l'animation puisse être relancée si on clique sur le bouton sans avoir à utiliser le hack!
       element.classList.remove(classe);
       callback();
     }, { once: true });
